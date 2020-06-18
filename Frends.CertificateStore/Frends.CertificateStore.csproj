@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>netstandard2.0;net471</TargetFrameworks>
+    <description>This is a Task for modifying certificate stores.</description>
+    <authors>HiQ Finland</authors>
+    <copyright>HiQ Finland</copyright>
+    <PackageProjectUrl>https://github.com/CommunityHiQ/Frends.CertificateStore</PackageProjectUrl>
+    <IncludeSource>true</IncludeSource>
+    <PackageTags>Frends</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="FrendsTaskMetadata.json" Pack="true" PackagePath="/">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>
+

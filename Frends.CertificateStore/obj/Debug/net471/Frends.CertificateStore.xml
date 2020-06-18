@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Frends.CertificateStore</name>
+    </assembly>
+    <members>
+        <member name="M:Frends.CertificateStore.CertificateStore.AddToLocalUser(System.String,System.String)">
+            <summary>
+            Add certificate to Local User Certificate Store
+            </summary>
+            <param name="path">Path to the certificate file.</param>
+            <param name="password">Password for the certificate</param>
+            <returns>Object { bool Success, CryptographicException Error }</returns>
+        </member>
+        <member name="M:Frends.CertificateStore.CertificateStore.RemoveFromLocalUser(System.String)">
+            <summary>
+            Remove certificate by name from Local User Certificate Store
+            </summary>
+            <param name="certificateName">The name of the certificate to remove.</param>
+            <returns>Object { bool Success, CryptographicException Error }</returns>
+        </member>
+    </members>
+</doc>
