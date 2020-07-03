@@ -38,7 +38,7 @@ namespace Frends.CertificateStore.Tests
         private static async Task CreateCertificateAndAddToLocalUserCertificateStore()
         {
             MakeCert();
-            var res = await CertificateStore.AddToLocalUser("certificate.cer", "CertificatePassword");
+            var res = await CertificateStore.AddToLocalUserViaFile("certificate.cer", "CertificatePassword");
             Assert.IsTrue(res.Success);
             var localCertificates = GetLocalUserCertificates();
             var generatedCertificateInStore = localCertificates.Find(X509FindType.FindByIssuerName, "frends", false);

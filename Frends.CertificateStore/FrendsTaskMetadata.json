@@ -1,10 +1,19 @@
 ﻿{
 	"Tasks": [
 		{
-			"TaskMethod": "Frends.CertificateStore.CertificateStore.AddToLocalUser"
+			"TaskMethod": "Frends.CertificateStore.CertificateStore.AddToLocalUserViaFile"
+		},
+		{
+			"TaskMethod": "Frends.CertificateStore.CertificateStore.AddToLocalUserViaRawData"
 		},
 		{
 			"TaskMethod": "Frends.CertificateStore.CertificateStore.RemoveFromLocalUser"
+		},
+		{
+			"TaskMethod": "Frends.CertificateStore.CertificateStore.GetCertificateFromBase64"
+		},
+		{
+			"TaskMethod": "Frends.CertificateStore.CertificateStore.GetAllCertificatesInSelectedStore"
 		}
 	]
 }

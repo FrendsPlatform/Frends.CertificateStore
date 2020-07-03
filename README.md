@@ -4,7 +4,10 @@ FRENDS Task for certificate stores.
 - [Frends.CertificateStore](#frendscertificatestore)
 - [Installing](#installing)
 - [Tasks](#tasks)
-  - [AddToLocalUser](#AddToLocalUser)
+  - [GetCertificateFromBase64](#GetCertificateFromBase64)
+  - [GetAllCertificatesInSelectedStore](#GetAllCertificatesInSelectedStore)
+  - [AddToLocalUserViaFile](#AddToLocalUserViaFile)
+  - [AddToLocalUserViaRawData](#AddToLocalUserViaRawData)
   - [RemoveFromLocalUser](#RemoveFromLocalUser)
 - [License](#license)
 - [Building](#building)
@@ -18,8 +21,40 @@ You can install the task via FRENDS UI Task view, by searching for packages. You
 Tasks
 =====
 
-## AddToLocalUser
-AddToLocalUser can be used to add a certificate to the Local User Certificate Store.
+## GetCertificateFromBase64
+GetCertificateFromBase64 can be used to get a certificates raw data from a Base64 string.
+
+Input:
+
+| Property          | Type                                   | Description										 | Example                                   |
+|-------------------|----------------------------------------|---------------------------------------------------|-------------------------------------------|
+| Base64            | string                                 | The Base64 to decode                              | `#result[Base64]` or `TUI<...>=`  |
+
+Result:
+
+| Property           | Type														| Description                                                             |
+|--------------------|----------------------------------------------------------|-------------------------------------------------------------------------|
+| Result             | Object { byte[] CertificateRawData }						| CertificateRawData will contain the decoded raw data of the certificate |
+
+
+## GetAllCertificatesInSelectedStore
+GetAllCertificatesInSelectedStore can be used to get all certificates from a selected store.
+
+Input:
+
+| Property              | Type                                       | Description										 |
+|-----------------------|--------------------------------------------|---------------------------------------------------|
+| CertificateStoreInput | enum { CurrentUser = 1, LocalMachine = 2 } | The store to get certificates from                |
+
+Result:
+
+| Property           | Type																																																															   | Description                                             |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| Result             | List [ X509Cert { X509ExtensionCollection Extensions, X500DistinguishedName SubjectName, string SerialNumber, byte[] RawData, X500DistinguishedName IssuerName, string FriendlyName, bool Archived, int Version, string Thumbprint, Oid SignatureAlgorithm } ]  | X509Cert will contain information about the certificate |
+
+
+## AddToLocalUserViaFile
+AddToLocalUser can be used to add a certificate to the Local User Certificate Store via a file.
 
 Input:
 
@@ -30,9 +65,26 @@ Input:
 
 Result:
 
-| Property          | Type                                                  | Description                                       |
-|-------------------|-------------------------------------------------------|---------------------------------------------------|
-| Result            | Object { bool Success, CryptographicException Error } | Success will be true if the certificate was added |
+| Property          | Type														| Description                                       |
+|-------------------|-----------------------------------------------------------|---------------------------------------------------|
+| Result            | Object { bool Success, CryptographicException Error }		| Success will be true if the certificate was added |
+
+
+## AddToLocalUserViaRawData
+AddToLocalUserViaRawData can be used to add a certificate to the Local User Certificate Store via raw data.
+
+Input:
+
+| Property           | Type                                   | Description									      | Example                                   |
+|--------------------|----------------------------------------|---------------------------------------------------|-------------------------------------------|
+| CertificateRawData | byte[] OR string                       | The raw data of the certificate to be added.      | `#result[RawData]` or `MII<...>=`  |
+| Password           | string                                 | A password for the certificate, can be left empty | `password`                                |
+
+Result:
+
+| Property          | Type														| Description                                       |
+|-------------------|-----------------------------------------------------------|---------------------------------------------------|
+| Result            | Object { bool Success, CryptographicException Error }		| Success will be true if the certificate was added |
 
 
 ## RemoveFromLocalUser
