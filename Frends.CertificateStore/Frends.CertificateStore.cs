@@ -93,7 +93,7 @@ namespace Frends.CertificateStore
                 catch (CryptographicException ce)
                 {
                     certificates = null;
-                    throw ce;
+                    return null;
                 }
             }
 
