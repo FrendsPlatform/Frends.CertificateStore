@@ -48,9 +48,9 @@ Input:
 
 Result:
 
-| Property           | Type																																																															   | Description                                             |
-|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Result             | List [ X509Cert { X509ExtensionCollection Extensions, X500DistinguishedName SubjectName, string SerialNumber, byte[] RawData, X500DistinguishedName IssuerName, string FriendlyName, bool Archived, int Version, string Thumbprint, Oid SignatureAlgorithm } ]  | X509Cert will contain information about the certificate |
+| Property           | Type																																																																								| Description                                             |
+|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| Result             | List [ X509Cert { X509ExtensionCollection Extensions, X500DistinguishedName SubjectName, string SerialNumber, byte[] RawData, X500DistinguishedName IssuerName, string FriendlyName, bool Archived, int Version, string Thumbprint, Oid SignatureAlgorithm } ], CyptographicException Exception  | X509Cert will contain information about the certificate |
 
 
 ## AddToLocalUserViaFile

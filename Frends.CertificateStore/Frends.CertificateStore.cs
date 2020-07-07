@@ -15,17 +15,11 @@ namespace Frends.CertificateStore
     public class LocalStoreResult
     { 
         public bool Success { get; set; }
-        public CryptographicException Error { get; set; }
     }
 
     public class X509CertificateResultRaw
     {
         public byte[] CertificateRawData { get; set; }
-    }
-
-    public class X509CertificateCollectionResult
-    {
-        public X509Certificate2Collection Certificates { get; set; }
     }
 
     public enum CertificateStoreLocation
@@ -63,12 +57,10 @@ namespace Frends.CertificateStore
         /// </summary>
         /// <param name="base64">The base64 string.</param>
         /// <returns>Object { byte[] CertificateRawData }</returns>
-        public static async Task<X509CertificateResultRaw> GetCertificateFromBase64(string base64)
+        public static X509CertificateResultRaw GetCertificateFromBase64(string base64)
         {
             byte[] bytes = Convert.FromBase64String(base64);
             var cert = new X509Certificate2(bytes);
-
-            await Task.CompletedTask;
 
             return new X509CertificateResultRaw
             {
@@ -80,47 +72,35 @@ namespace Frends.CertificateStore
         /// Get all certificates in selected Certificate Store.
         /// </summary>
         /// <returns>List [ Object { X509Cert Certificate } ]</returns>
-        public static async Task<List<X509Cert>> GetAllCertificatesInSelectedStore(CertificateStoreInput input)
+        public static List<X509Cert> GetAllCertificatesInSelectedStore(CertificateStoreInput StoreInput)
         {
+            var storeType = (StoreLocation)StoreInput.CertificateStoreType;
             X509Certificate2Collection certificates;
-            using (X509Store store = new X509Store(StoreName.My, (StoreLocation)input.CertificateStoreType))
+            using (X509Store store = new X509Store(StoreName.My, storeType))
             {
-                try
-                {
-                    store.Open(OpenFlags.ReadOnly);
-                    certificates = store.Certificates;
-                }
-                catch (CryptographicException ce)
-                {
-                    certificates = null;
-                    return null;
-                }
+                store.Open(OpenFlags.ReadOnly);
+                certificates = store.Certificates;
             }
 
             List<X509Cert> certificatesToReturn = new List<X509Cert>();
-            if (certificates != null)
+            foreach (var cert in certificates)
             {
-                foreach (var cert in certificates)
+                certificatesToReturn.Add(new X509Cert
                 {
-                    certificatesToReturn.Add(new X509Cert
-                    {
-                        Archived = cert.Archived,
-                        FriendlyName = cert.FriendlyName,
-                        Extensions = cert.Extensions,
-                        IssuerName = cert.IssuerName,
-                        RawData = cert.RawData,
-                        SerialNumber = cert.SerialNumber,
-                        SignatureAlgorithm = cert.SignatureAlgorithm,
-                        SubjectName = cert.SubjectName,
-                        Thumbprint = cert.Thumbprint,
-                        Version = cert.Version,
-                        NotAfter = cert.NotAfter,
-                        NotBefore = cert.NotBefore
-                    });
-                }
+                    Archived = cert.Archived,
+                    FriendlyName = cert.FriendlyName,
+                    Extensions = cert.Extensions,
+                    IssuerName = cert.IssuerName,
+                    RawData = cert.RawData,
+                    SerialNumber = cert.SerialNumber,
+                    SignatureAlgorithm = cert.SignatureAlgorithm,
+                    SubjectName = cert.SubjectName,
+                    Thumbprint = cert.Thumbprint,
+                    Version = cert.Version,
+                    NotAfter = cert.NotAfter,
+                    NotBefore = cert.NotBefore
+                });
             }
-
-            await Task.CompletedTask;
 
             return certificatesToReturn;
         }
@@ -131,7 +111,7 @@ namespace Frends.CertificateStore
         /// <param name="certificateRawData">Raw data of the certificate as byte[] or string.</param>
         /// <param name="password">Password for the certificate.</param>
         /// <returns>Object { bool Success, CryptographicException Error }</returns>
-        public static async Task<LocalStoreResult> AddToLocalUserViaRawData(dynamic certificateRawData, [PasswordPropertyText] string password)
+        public static LocalStoreResult AddToLocalUserViaRawData(dynamic certificateRawData, [PasswordPropertyText] string password)
         {
             byte[] certificateStringAsByteArray;
             if (certificateRawData is string)
@@ -151,8 +131,6 @@ namespace Frends.CertificateStore
 
             AddCertificateToLocalUserStore(certificate);
 
-            await Task.CompletedTask;
-
             return new LocalStoreResult
             {
                 Success = true
@@ -165,13 +143,11 @@ namespace Frends.CertificateStore
         /// <param name="path">Path to the certificate file.</param>
         /// <param name="password">Password for the certificate</param>
         /// <returns>Object { bool Success, CryptographicException Error }</returns>
-        public static async Task<LocalStoreResult> AddToLocalUserViaFile(string path, [PasswordPropertyText] string password)
+        public static LocalStoreResult AddToLocalUserViaFile(string path, [PasswordPropertyText] string password)
         {
             var certificate = new X509Certificate2(File.ReadAllBytes(path), new NetworkCredential("", password).SecurePassword, X509KeyStorageFlags.PersistKeySet | X509KeyStorageFlags.UserKeySet);
 
             AddCertificateToLocalUserStore(certificate);
-
-            await Task.CompletedTask;
 
             return new LocalStoreResult
             {
@@ -184,38 +160,26 @@ namespace Frends.CertificateStore
         /// </summary>
         /// <param name="certificateName">The name of the certificate to remove.</param>
         /// <returns>Object { bool Success, CryptographicException Error }</returns>
-        public static async Task<LocalStoreResult> RemoveFromLocalUser(string certificateName)
+        public static LocalStoreResult RemoveFromLocalUser(string certificateName)
         {
             using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
-                try
+                store.Open(OpenFlags.ReadWrite);
+                X509Certificate2Collection certificatesToDelete = store.Certificates.Find(X509FindType.FindBySubjectName, certificateName, false);
+                if (certificatesToDelete.Count != 0)
                 {
-                    store.Open(OpenFlags.ReadWrite);
-                    X509Certificate2Collection certificatesToDelete = store.Certificates.Find(X509FindType.FindBySubjectName, certificateName, false);
-                    if (certificatesToDelete.Count != 0)
+                    X509Chain ch = new X509Chain();
+                    ch.Build(certificatesToDelete[0]);
+                    X509Certificate2Collection allCertsInChain = new X509Certificate2Collection();
+
+                    foreach (X509ChainElement el in ch.ChainElements)
                     {
-                        X509Chain ch = new X509Chain();
-                        ch.Build(certificatesToDelete[0]);
-                        X509Certificate2Collection allCertsInChain = new X509Certificate2Collection();
-
-                        foreach (X509ChainElement el in ch.ChainElements)
-                        {
-                            allCertsInChain.Add(el.Certificate);
-                        }
-
-                        store.RemoveRange(allCertsInChain);
+                        allCertsInChain.Add(el.Certificate);
                     }
-                } catch (CryptographicException ce)
-                {
-                    return new LocalStoreResult
-                    {
-                        Success = false,
-                        Error = ce
-                    };
+
+                    store.RemoveRange(allCertsInChain);
                 }
             }
-
-            await Task.CompletedTask;
 
             return new LocalStoreResult
             {
@@ -223,27 +187,12 @@ namespace Frends.CertificateStore
             };
         }
 
-        private static LocalStoreResult AddCertificateToLocalUserStore(X509Certificate2 certificate)
+        private static void AddCertificateToLocalUserStore(X509Certificate2 certificate)
         {
             using (X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
-                try
-                {
-                    store.Open(OpenFlags.ReadWrite);
-                    store.Add(certificate);
-                    return new LocalStoreResult
-                    {
-                        Success = true
-                    };
-                }
-                catch (CryptographicException ce)
-                {
-                    return new LocalStoreResult
-                    {
-                        Success = false,
-                        Error = ce
-                    };
-                }
+                store.Open(OpenFlags.ReadWrite);
+                store.Add(certificate);
             }
         }
 
