@@ -28,7 +28,7 @@ Input:
 
 | Property          | Type                                   | Description										 | Example                                   |
 |-------------------|----------------------------------------|---------------------------------------------------|-------------------------------------------|
-| Base64            | string                                 | The Base64 to decode                              | `#result[Base64]` or `TUI<...>=`  |
+| Base64            | string                                 | The Base64 to decode                              | `#result[Base64]` or `TUI<...>=`          |
 
 Result:
 
@@ -48,9 +48,9 @@ Input:
 
 Result:
 
-| Property           | Type																																																																								| Description                                             |
-|--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
-| Result             | List [ X509Cert { X509ExtensionCollection Extensions, X500DistinguishedName SubjectName, string SerialNumber, byte[] RawData, X500DistinguishedName IssuerName, string FriendlyName, bool Archived, int Version, string Thumbprint, Oid SignatureAlgorithm } ], CyptographicException Exception  | X509Cert will contain information about the certificate |
+| Property           | Type																																																															   | Description                                             |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|
+| Result             | List [ X509Cert { X509ExtensionCollection Extensions, X500DistinguishedName SubjectName, string SerialNumber, byte[] RawData, X500DistinguishedName IssuerName, string FriendlyName, bool Archived, int Version, string Thumbprint, Oid SignatureAlgorithm } ]  | X509Cert will contain information about the certificate |
 
 
 ## AddToLocalUserViaFile
@@ -65,9 +65,9 @@ Input:
 
 Result:
 
-| Property          | Type														| Description                                       |
-|-------------------|-----------------------------------------------------------|---------------------------------------------------|
-| Result            | Object { bool Success, CryptographicException Error }		| Success will be true if the certificate was added |
+| Property          | Type						| Description                                       |
+|-------------------|---------------------------|---------------------------------------------------|
+| Result            | Object { bool Success }	| Success will be true if the certificate was added |
 
 
 ## AddToLocalUserViaRawData
@@ -77,14 +77,14 @@ Input:
 
 | Property           | Type                                   | Description									      | Example                                   |
 |--------------------|----------------------------------------|---------------------------------------------------|-------------------------------------------|
-| CertificateRawData | byte[] OR string                       | The raw data of the certificate to be added.      | `#result[RawData]` or `MII<...>=`  |
+| CertificateRawData | byte[] OR string                       | The raw data of the certificate to be added.      | `#result[RawData]` or `MII<...>=`         |
 | Password           | string                                 | A password for the certificate, can be left empty | `password`                                |
 
 Result:
 
-| Property          | Type														| Description                                       |
-|-------------------|-----------------------------------------------------------|---------------------------------------------------|
-| Result            | Object { bool Success, CryptographicException Error }		| Success will be true if the certificate was added |
+| Property          | Type						| Description                                       |
+|-------------------|---------------------------|---------------------------------------------------|
+| Result            | Object { bool Success }	| Success will be true if the certificate was added |
 
 
 ## RemoveFromLocalUser
@@ -98,9 +98,9 @@ Input:
 
 Result:
 
-| Property          | Type                                                  | Description                                                                                                                   |
-|-------------------|-------------------------------------------------------|------------------------------------------------------------------|
-| Result            | Object { bool Success, CryptographicException Error } | Success will be true if the certificate was removed successfully                                                                             |
+| Property          | Type                    | Description                                                      |
+|-------------------|-------------------------|------------------------------------------------------------------|
+| Result            | Object { bool Success } | Success will be true if the certificate was removed successfully |
 
 
 
